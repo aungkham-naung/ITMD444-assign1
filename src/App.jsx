@@ -1,35 +1,32 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import {
+  fetchDoctorsWithSpecializations,
+  fetchPrescriptionHistory
+} from "./services/supabaseService";
 
 function App() {
-  const [count, setCount] = useState(0);
-  // console.log(import.meta.env.VITE_SUPABASE_URL);
+  const [query, setQuery] = useState(null);
+
+  const handleFetchDoctors = async () => {
+    const data = await fetchDoctorsWithSpecializations();
+    setQuery(data);
+  };
+
+  const handleFetchPrescriptions = async () => {
+    const patientID = 1;
+    const data = await fetchPrescriptionHistory(patientID);
+    setQuery(data);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="container">
+      <h1>Hospital Database Queries</h1>
+
+      <button onClick={handleFetchDoctors}>Doctors & Specializations</button>
+      <button onClick={handleFetchPrescriptions}>Prescription History</button>
+
+      {query && <pre>{JSON.stringify(query, null, 2)}</pre>}
+    </div>
   );
 }
 

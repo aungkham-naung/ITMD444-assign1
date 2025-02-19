@@ -7,8 +7,8 @@ const supabase = createClient(
 
 export const fetchDoctorsWithSpecializations = async () => {
   const { data, error } = await supabase
-    .from("DoctorSpecialization")
-    .select("DoctorID, Specialization, Doctor(DoctorName)");
+    .from("doctorspecialization")
+    .select("doctorid, specialization, doctor(doctorname)");
 
   if (error) {
     console.error("Error fetching doctors:", error);
@@ -19,15 +19,15 @@ export const fetchDoctorsWithSpecializations = async () => {
 
 export const fetchPrescriptionHistory = async (patientID) => {
   const { data, error } = await supabase
-    .from("Prescription")
+    .from("prescription")
     .select(
       `
-      PrescriptionDate, PrescriptionEndDate,
-      Medication(MedicationName, Dosage),
-      Diagnosis(Patient(PatientName))
+      prescriptiondate, prescriptionenddate,
+      medication(medicationname, dosage),
+      diagnosis(patientid, patient(patientname))
     `
     )
-    .match("Diagnosis.PatientID", patientID);
+    .eq("diagnosis.patientid", patientID);
 
   if (error) {
     console.error("Error fetching prescriptions:", error);
